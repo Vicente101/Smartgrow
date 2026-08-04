@@ -94,7 +94,7 @@ export default function Home() {
 
                     <div className="relative mx-auto w-full max-w-[570px] lg:ml-auto">
                         <div className="relative aspect-[.91] overflow-hidden rounded-[2rem] border border-white/12 shadow-2xl shadow-black/30">
-                            <img src="/images/farm-hero.webp" alt="Farm workers tending a green field" className="h-full w-full object-cover" />
+                            <img src={`${import.meta.env.BASE_URL}images/farm-hero.webp`} alt="Farm workers tending a green field" className="h-full w-full object-cover" />
                             <div className="absolute inset-0 bg-gradient-to-t from-forest-950/78 via-transparent to-white/5" />
                             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                                 <div className="flex items-end justify-between gap-6">

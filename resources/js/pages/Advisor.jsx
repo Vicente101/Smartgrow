@@ -25,13 +25,17 @@ import {
     Waves,
     Wind,
 } from 'lucide-react';
-import { api, readStoredAdvice } from '../lib/api';
+import { readStoredAdvice } from '../lib/api';
+import { useLocation } from '../lib/router';
+import { buildAdvice } from '../services/advisor';
+import { searchLocations } from '../services/location';
 import WeatherGlyph from '../components/WeatherGlyph';
 
 const monthNames = Array.from({ length: 12 }, (_, index) => new Date(2024, index, 1).toLocaleString('en', { month: 'long' }));
 
 export default function Advisor() {
-    const initialLocation = new URLSearchParams(window.location.search).get('location') || '';
+    const routeLocation = useLocation();
+    const initialLocation = new URLSearchParams(routeLocation.search).get('location') || '';
     const [form, setForm] = useState({
         location: initialLocation,
         month: new Date().getMonth() + 1,
@@ -58,8 +62,8 @@ export default function Advisor() {
         const timer = setTimeout(async () => {
             setSuggesting(true);
             try {
-                const response = await api(`/api/locations?q=${encodeURIComponent(form.location.trim())}`, { signal: controller.signal });
-                setSuggestions(response.data || []);
+                const locations = await searchLocations(form.location.trim(), { signal: controller.signal });
+                setSuggestions(locations);
             } catch (requestError) {
                 if (requestError.name !== 'AbortError') setSuggestions([]);
             } finally {
@@ -129,9 +133,9 @@ export default function Advisor() {
                     ? { latitude: selectedLocation.latitude, longitude: selectedLocation.longitude }
                     : {}),
             };
-            const response = await api('/api/advice', { method: 'POST', body: JSON.stringify(payload) });
-            setResult(response.data);
-            localStorage.setItem('munda:last-advice', JSON.stringify(response.data));
+            const advice = await buildAdvice(payload);
+            setResult(advice);
+            localStorage.setItem('munda:last-advice', JSON.stringify(advice));
             setSaved(true);
             setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
         } catch (requestError) {

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Opening Munda…</title>
+</head>
+<body>
+    <p>Opening Munda…</p>
+    <script>
+        (function () {
+            var repository = 'The-Recommending-System';
+            var marker = '/' + repository + '/';
+            var index = window.location.pathname.indexOf(marker);
+            var base = index >= 0 ? window.location.pathname.slice(0, index + marker.length) : '/';
+            var route = index >= 0 ? window.location.pathname.slice(index + marker.length) : '';
+            window.location.replace(base + '#/' + route + window.location.search);
+        }());
+    </script>
+</body>
+</html>

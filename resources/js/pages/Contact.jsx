@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowRight, CheckCircle2, LoaderCircle, Mail, MapPin, MessageCircle, ShieldCheck } from 'lucide-react';
-import { api } from '../lib/api';
+
+const contactEmail = 'croprecommendation@gmail.com';
 
 export default function Contact() {
     const [form, setForm] = useState({ name: '', email: '', subject: '', message: '', location: '', website: '' });
@@ -18,11 +19,19 @@ export default function Contact() {
         setError('');
         setSuccess('');
         try {
-            const response = await api('/api/contact', { method: 'POST', body: JSON.stringify(form) });
-            setSuccess(response.message);
-            setForm({ name: '', email: '', subject: '', message: '', location: '', website: '' });
+            if (form.website) return;
+            const message = [
+                `Name: ${form.name}`,
+                `Reply email: ${form.email}`,
+                `Location: ${form.location || 'Not supplied'}`,
+                '',
+                form.message,
+            ].join('\n');
+            const mailto = `mailto:${contactEmail}?subject=${encodeURIComponent(`[Munda] ${form.subject}`)}&body=${encodeURIComponent(message)}`;
+            window.location.href = mailto;
+            setSuccess('Your email draft has been opened. Review it in your email app and press Send.');
         } catch (requestError) {
-            setError(requestError.message);
+            setError(requestError.message || `Could not open your email app. Email us directly at ${contactEmail}.`);
         } finally {
             setLoading(false);
         }
@@ -39,7 +48,7 @@ export default function Contact() {
                         <p className="mt-5 text-sm leading-7 text-white/58">Share feedback, report a data issue, or ask about adapting Munda for an agricultural programme.</p>
 
                         <div className="mt-10 grid gap-4">
-                            <ContactDetail icon={Mail} label="Email" value="croprecommendation@gmail.com" />
+                            <ContactDetail icon={Mail} label="Email" value={contactEmail} />
                             <ContactDetail icon={MapPin} label="Based in" value="Ndola, Zambia" />
                             <ContactDetail icon={ShieldCheck} label="Data note" value="We do not sell location or message data." />
                         </div>
@@ -61,12 +70,12 @@ export default function Contact() {
                         <div className="hidden" aria-hidden="true"><input tabIndex="-1" autoComplete="off" value={form.website} onChange={(event) => update('website', event.target.value)} /></div>
                         <div className="sm:col-span-2">
                             <label className="field-label" htmlFor="message">Message</label>
-                            <textarea id="message" rows="6" required minLength="10" maxLength="5000" className="field-input mt-2 h-auto resize-y py-3" value={form.message} onChange={(event) => update('message', event.target.value)} placeholder="Tell us what you noticed or what you are trying to achieve." />
+                            <textarea id="message" rows="6" required minLength="10" maxLength="1500" className="field-input mt-2 h-auto resize-y py-3" value={form.message} onChange={(event) => update('message', event.target.value)} placeholder="Tell us what you noticed or what you are trying to achieve." />
                         </div>
                         <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-                            <p className="text-xs leading-5 text-stone-400">Messages are stored securely in the application database.</p>
+                            <p className="text-xs leading-5 text-stone-400">Your details stay in this browser. The button opens a draft in your email app.</p>
                             <button type="submit" className="button button-dark justify-center" disabled={loading}>
-                                {loading ? <><LoaderCircle size={17} className="animate-spin" /> Sending</> : <>Send message <ArrowRight size={17} /></>}
+                                {loading ? <><LoaderCircle size={17} className="animate-spin" /> Preparing</> : <>Open email draft <ArrowRight size={17} /></>}
                             </button>
                         </div>
                     </form>

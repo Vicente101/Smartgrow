@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowUpRight, CalendarDays, Globe2, LoaderCircle, MapPin, Newspaper, RefreshCw, Search, ShieldCheck } from 'lucide-react';
-import { api, formatDate, readStoredAdvice } from '../lib/api';
+import { formatDate, readStoredAdvice } from '../lib/api';
+import { getAgricultureNews } from '../services/news';
 
 const trustedResources = [
     { name: 'FAO Newsroom', detail: 'Global food and agriculture updates', url: 'https://www.fao.org/newsroom/en' },
@@ -21,8 +22,8 @@ export default function News() {
         setLoading(true);
         setError('');
         try {
-            const response = await api(`/api/news?location=${encodeURIComponent(place)}`);
-            setData(response.data);
+            const news = await getAgricultureNews(place);
+            setData(news);
             setActiveLocation(place);
         } catch (requestError) {
             setError(requestError.message);
@@ -73,6 +74,11 @@ export default function News() {
                 </div>
 
                 {error && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</div>}
+                {data?.status === 'search_fallback' && !loading && (
+                    <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+                        The live headline feed is temporarily busy. These cards open current, location-filtered searches from established news sources instead.
+                    </div>
+                )}
 
                 {loading ? <NewsSkeleton /> : data?.articles?.length > 0 ? (
                     <div className="mt-8 grid gap-x-5 gap-y-7 sm:grid-cols-2 lg:grid-cols-3">

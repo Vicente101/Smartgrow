@@ -1,88 +1,73 @@
 # Munda Crop Intelligence
 
-Munda is a Laravel 12 + React 19 + Tailwind CSS 4 application that turns local climate data into explainable crop recommendations. It replaces the original static PHP prototype with a responsive SPA, server-side API integrations, an agronomic scoring engine, location-aware agricultural news, persistent contact messages, caching, validation, and automated tests.
+Munda is a static React 19 + Tailwind CSS 4 application that turns local climate data into explainable crop recommendations. It is designed to run entirely on GitHub Pages without PHP, a database, API keys, or a separate backend.
 
 ## What it does
 
 - Searches towns worldwide or uses browser geolocation.
-- Fetches a 14-day weather and soil outlook from Open-Meteo.
-- Aggregates the last five complete years of ERA5 climate history by month.
-- Falls back to NASA POWER climatology if the history service is unavailable.
+- Fetches a live 14-day weather and soil outlook from Open-Meteo.
+- Aggregates the last five complete years of ERA5 history into monthly climate patterns.
+- Falls back to NASA POWER climatology if historical weather is unavailable.
 - Ranks 18 crops against temperature, rainfall, humidity, soil type, water access, and the near-term forecast.
-- Explains every score with component scores, strengths, risks, and field actions.
-- Displays location-filtered agricultural headlines from GDELT with Google News RSS fallback.
-- Saves the latest report in the browser and supports print/PDF export.
-- Stores validated contact messages in the application database.
+- Explains each result through component scores, strengths, risks, confidence, and practical field actions.
+- Shows location-filtered agricultural reporting from GDELT, with direct source-search links when the live feed is busy.
+- Saves the latest analysis locally in the browser and supports print/PDF export.
+- Provides a privacy-friendly contact form that opens a prepared email draft.
 
-The recommendation model is deliberately described as an **explainable weighted agronomic model**, not machine learning. A genuine trained model should only replace or complement it after representative local soil, planting, management, and harvest-outcome data is collected.
+The recommendation method is an **explainable weighted agronomic model**, not a trained machine-learning model. A validated ML model would require representative local records covering soil, seed variety, planting date, farm management, weather, pests, and harvest outcomes.
 
-## Requirements
+## Local development
 
-- PHP 8.2+
-- Composer 2
-- Node.js 20+
-- SQLite (default), MySQL, or PostgreSQL
-- PHP extensions: cURL, PDO SQLite (for the default database), and SimpleXML
-
-## Local setup
+Requirements: Node.js 20.19 or newer and npm.
 
 ```bash
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate --seed
 npm install
-npm run build
-php artisan serve
+npm run dev
 ```
 
-On Windows PowerShell, use `Copy-Item .env.example .env` instead of `cp`.
+Open the local address printed by Vite. No `.env` file or API key is required.
 
-For active development, the Laravel scaffold also provides:
+Useful commands:
 
 ```bash
-composer run dev
+npm run test       # Run recommendation and climate-processing tests
+npm run build      # Create the static site in dist/
+npm run preview    # Preview the production build locally
+npm run check      # Run tests, then build
+npm run check:live # Optional end-to-end check against the live data providers
 ```
 
-This starts Laravel, Vite, the queue listener, and the log viewer together.
+## Deploying to GitHub Pages
 
-## Deploying the full application
+The repository includes `.github/workflows/deploy-pages.yml`. It tests and builds the application, uploads `dist/`, and deploys it using GitHub's official Pages actions.
 
-GitHub Pages only serves static files and cannot run Laravel/PHP or the database-backed API. Keep this repository on GitHub, but deploy the application to Render using the included `Dockerfile` and `render.yaml` Blueprint.
+1. Commit and push the project to the `main` branch.
+2. Open the repository on GitHub and go to **Settings > Pages**.
+3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+4. Open the repository's **Actions** tab and select **Deploy Munda to GitHub Pages**.
+5. Wait for both the `build` and `deploy` jobs to become green.
+6. Open `https://vicente101.github.io/The-Recommending-System/`.
 
-1. Generate a production application key locally:
+Every later push to `main` automatically tests and republishes the site. Navigation uses URL hashes, such as `#/advisor`, so refreshing an internal page works reliably on static hosting. A `404.html` redirect also recovers old path-style links.
 
-   ```bash
-   php artisan key:generate --show
-   ```
+If the root still shows 404, confirm that the Pages source is **GitHub Actions**, the latest workflow run succeeded, and the repository name still matches `The-Recommending-System`.
 
-   Copy the complete value beginning with `base64:`. Never commit it to Git.
+## Static architecture
 
-2. Commit and push the project, including `Dockerfile`, `docker/`, and `render.yaml`.
-3. In the [Render Dashboard](https://dashboard.render.com/), choose **New > Blueprint** and connect this GitHub repository.
-4. Select the branch containing `render.yaml`. Render will create the Docker web service and PostgreSQL database defined by the Blueprint.
-5. When prompted for `APP_KEY`, paste the key generated in step 1, then apply the Blueprint.
-6. Wait for the first deployment to finish and open the assigned `https://...onrender.com` address. The `/up` endpoint is the health check.
-7. In the GitHub repository, open **Settings > Pages** and unpublish the old Pages site so visitors are not sent to its 404 page.
+| Area | Implementation |
+| --- | --- |
+| Interface | React and Tailwind CSS, bundled by Vite |
+| Routing | Small hash router compatible with GitHub Pages |
+| Crop catalogue | Version-controlled JavaScript data in `resources/js/data/crops.js` |
+| Recommendation engine | Browser-side explainable scoring in `resources/js/services/recommendation.js` |
+| Weather and climate | Open-Meteo with NASA POWER fallback |
+| Place search | Open-Meteo Geocoding |
+| Reverse geocoding | Nominatim / OpenStreetMap, with a coordinate fallback |
+| Agricultural news | Browser-accessible GDELT DOC API with source-search fallbacks |
+| Persistence | Browser local storage with expiry-aware caches |
+| Contact | A generated `mailto:` draft; no personal data is stored by the site |
 
-Every push to the connected branch will trigger a new deployment. The startup script caches Laravel configuration, runs outstanding migrations, and safely refreshes the crop catalogue with its idempotent seeder.
-
-Render's free web services sleep when idle, so the first request after inactivity can be slow. Free Render PostgreSQL databases also expire after 30 days; use a paid Render database or another persistent PostgreSQL provider for a permanent public deployment.
-
-If deployment reports `No application encryption key has been specified`, set the Render service's `APP_KEY` environment variable to the complete generated `base64:` value and redeploy. Do not upload `.env`, `vendor`, or `node_modules`.
-
-## Verification
-
-```bash
-npm run check
-npm audit
-```
-
-The feature tests fake external providers, so they are fast and deterministic. Live provider responses are cached: forecasts for 45 minutes, news for 30 minutes, geocoding for 30 days, and climate baselines for 30 days.
-
-## Recommendation method
-
-For a selected location and planting month, the backend scores each crop using:
+## Recommendation weights
 
 | Signal | Future month | Current month |
 | --- | ---: | ---: |
@@ -92,20 +77,19 @@ For a selected location and planting month, the backend scores each crop using:
 | Soil compatibility | 12% | 12% |
 | 14-day outlook | — | 17% |
 
-Crop requirements use tolerance and optimum bands instead of a single minimum/maximum test. Results also include a confidence level that reflects whether live forecast data and farmer-supplied soil information were available.
+Crop profiles use tolerance and optimum bands rather than a single minimum/maximum check. Confidence reflects the availability of live forecast data, historical climate, and farmer-supplied soil information.
 
-## External services
+## External data and privacy
 
-No paid keys are required for the default non-commercial setup.
+The default non-commercial setup uses no paid keys:
 
-- [Open-Meteo](https://open-meteo.com/) — forecast, geocoding, soil variables, and ERA5 historical weather. Attribution is required; review its limits before commercial deployment.
+- [Open-Meteo](https://open-meteo.com/) — forecast, soil variables, geocoding, and historical weather.
 - [NASA POWER](https://power.larc.nasa.gov/) — agroclimatology fallback.
-- [Nominatim](https://nominatim.org/) — reverse geocoding for device coordinates. Follow the public usage policy at scale.
+- [Nominatim](https://nominatim.org/) and [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) — reverse geocoding.
 - [GDELT](https://www.gdeltproject.org/) — global news discovery.
-- [Google News](https://news.google.com/) — RSS fallback when GDELT is slow or sparse.
 
-All endpoint URLs can be overridden in `.env`; see `.env.example`.
+Coordinates are sent only to the listed data providers when an analysis is requested. Results and caches remain in the user's browser. Review each provider's attribution and usage terms before commercial or high-volume deployment.
 
-## Important agronomic limitation
+## Agronomic limitation
 
-Munda is decision support, not a replacement for a current soil test, district planting calendar, certified seed guidance, pest surveillance, or a local extension officer. Weather-model output and public news feeds can be incomplete or delayed, so the UI exposes the source and confidence rather than presenting a recommendation as certainty.
+Munda is decision support, not a replacement for a current soil test, district planting calendar, certified seed guidance, pest surveillance, or a local extension officer. Weather-model output and public news feeds can be incomplete or delayed, so the interface exposes sources and confidence rather than presenting recommendations as certainty.

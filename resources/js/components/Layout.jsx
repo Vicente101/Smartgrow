@@ -94,8 +94,8 @@ export default function Layout({ children }) {
                         <div className="mt-4 grid gap-3 text-sm text-white/65">
                             <a className="footer-link" href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a>
                             <a className="footer-link" href="https://power.larc.nasa.gov/" target="_blank" rel="noreferrer">NASA POWER</a>
+                            <a className="footer-link" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>
                             <a className="footer-link" href="https://www.gdeltproject.org/" target="_blank" rel="noreferrer">GDELT Project</a>
-                            <a className="footer-link" href="https://news.google.com/" target="_blank" rel="noreferrer">Google News</a>
                         </div>
                     </div>
                 </div>

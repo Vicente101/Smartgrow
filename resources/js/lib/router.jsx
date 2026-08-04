@@ -2,21 +2,33 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 
 const RouterContext = createContext(null);
 
+function readHashLocation() {
+    const value = window.location.hash.replace(/^#/, '') || '/';
+    const url = new URL(value.startsWith('/') ? value : `/${value}`, window.location.origin);
+
+    const pathname = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') : '/';
+    return { pathname, search: url.search };
+}
+
 export function RouterProvider({ children }) {
-    const [location, setLocation] = useState(() => ({ pathname: window.location.pathname, search: window.location.search }));
+    const [location, setLocation] = useState(readHashLocation);
 
     useEffect(() => {
-        const onPopState = () => setLocation({ pathname: window.location.pathname, search: window.location.search });
-        window.addEventListener('popstate', onPopState);
-        return () => window.removeEventListener('popstate', onPopState);
+        const onHashChange = () => setLocation(readHashLocation());
+        window.addEventListener('hashchange', onHashChange);
+        return () => window.removeEventListener('hashchange', onHashChange);
     }, []);
 
     const value = useMemo(() => ({
         location,
         navigate(to, { replace = false } = {}) {
-            if (replace) window.history.replaceState({}, '', to);
-            else window.history.pushState({}, '', to);
-            setLocation({ pathname: window.location.pathname, search: window.location.search });
+            const target = to.startsWith('/') ? to : `/${to}`;
+            if (replace) {
+                window.history.replaceState({}, '', `${window.location.pathname}${window.location.search}#${target}`);
+                setLocation(readHashLocation());
+            } else {
+                window.location.hash = target;
+            }
         },
     }), [location]);
 
@@ -40,7 +52,7 @@ export function Link({ to, onClick, children, ...props }) {
         navigate(to);
     }
 
-    return <a href={to} onClick={follow} {...props}>{children}</a>;
+    return <a href={`#${to}`} onClick={follow} {...props}>{children}</a>;
 }
 
 export function NavLink({ to, className, children, ...props }) {
