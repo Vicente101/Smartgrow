@@ -46,6 +46,31 @@ composer run dev
 
 This starts Laravel, Vite, the queue listener, and the log viewer together.
 
+## Deploying the full application
+
+GitHub Pages only serves static files and cannot run Laravel/PHP or the database-backed API. Keep this repository on GitHub, but deploy the application to Render using the included `Dockerfile` and `render.yaml` Blueprint.
+
+1. Generate a production application key locally:
+
+   ```bash
+   php artisan key:generate --show
+   ```
+
+   Copy the complete value beginning with `base64:`. Never commit it to Git.
+
+2. Commit and push the project, including `Dockerfile`, `docker/`, and `render.yaml`.
+3. In the [Render Dashboard](https://dashboard.render.com/), choose **New > Blueprint** and connect this GitHub repository.
+4. Select the branch containing `render.yaml`. Render will create the Docker web service and PostgreSQL database defined by the Blueprint.
+5. When prompted for `APP_KEY`, paste the key generated in step 1, then apply the Blueprint.
+6. Wait for the first deployment to finish and open the assigned `https://...onrender.com` address. The `/up` endpoint is the health check.
+7. In the GitHub repository, open **Settings > Pages** and unpublish the old Pages site so visitors are not sent to its 404 page.
+
+Every push to the connected branch will trigger a new deployment. The startup script caches Laravel configuration, runs outstanding migrations, and safely refreshes the crop catalogue with its idempotent seeder.
+
+Render's free web services sleep when idle, so the first request after inactivity can be slow. Free Render PostgreSQL databases also expire after 30 days; use a paid Render database or another persistent PostgreSQL provider for a permanent public deployment.
+
+If deployment reports `No application encryption key has been specified`, set the Render service's `APP_KEY` environment variable to the complete generated `base64:` value and redeploy. Do not upload `.env`, `vendor`, or `node_modules`.
+
 ## Verification
 
 ```bash
