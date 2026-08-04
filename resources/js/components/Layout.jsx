@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Menu, X } from '../icons';
 import { Link, NavLink, useLocation } from '../lib/router';
 import Brand from './Brand';
@@ -13,15 +13,37 @@ const navItems = [
 export default function Layout({ children }) {
     const [open, setOpen] = useState(false);
     const location = useLocation();
+    const mainRef = useRef(null);
+    const menuButtonRef = useRef(null);
+    const mobileNavigationRef = useRef(null);
+    const previousPathRef = useRef(location.pathname);
+
+    function closeMobileNavigation({ focus = 'page' } = {}) {
+        if (mobileNavigationRef.current?.contains(document.activeElement)) {
+            const focusTarget = focus === 'menu' ? menuButtonRef.current : mainRef.current;
+            focusTarget?.focus({ preventScroll: true });
+        }
+        setOpen(false);
+    }
 
     useEffect(() => {
+        const routeChanged = previousPathRef.current !== location.pathname;
+        previousPathRef.current = location.pathname;
+
+        // Focus must leave the menu before it becomes inert. This also gives
+        // client-side route changes a useful focus target for screen readers.
+        if (mobileNavigationRef.current?.contains(document.activeElement)) {
+            mainRef.current?.focus({ preventScroll: true });
+        }
         setOpen(false);
-        window.scrollTo({ top: 0, behavior: 'instant' });
 
         let observer;
         let mutationObserver;
 
         const frame = window.requestAnimationFrame(() => {
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            if (routeChanged) mainRef.current?.focus({ preventScroll: true });
+
             if (!('IntersectionObserver' in window)) {
                 const revealAll = () => document.querySelectorAll('[data-reveal]').forEach((element) => { element.dataset.revealed = 'true'; });
                 revealAll();
@@ -64,6 +86,19 @@ export default function Layout({ children }) {
         return () => { document.body.style.overflow = ''; };
     }, [open]);
 
+    useEffect(() => {
+        if (!open) return undefined;
+
+        function handleKeyDown(event) {
+            if (event.key !== 'Escape') return;
+            event.preventDefault();
+            closeMobileNavigation({ focus: 'menu' });
+        }
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [open]);
+
     return (
         <div className="min-h-screen bg-canvas text-ink selection:bg-lime-200 selection:text-forest-950">
             <header className="sticky top-0 z-50 border-b border-forest-950/7 bg-canvas/90 backdrop-blur-xl">
@@ -92,33 +127,40 @@ export default function Layout({ children }) {
                     </div>
 
                     <button
+                        ref={menuButtonRef}
                         type="button"
                         className="grid size-11 place-items-center border border-forest-950/10 bg-transparent text-forest-900 md:hidden"
                         onClick={() => setOpen((value) => !value)}
                         aria-label={open ? 'Close navigation' : 'Open navigation'}
                         aria-expanded={open}
+                        aria-controls="mobile-navigation"
                     >
                         {open ? <X size={20} /> : <Menu size={20} />}
                     </button>
                 </div>
 
-                <div className={`mobile-nav-grid md:hidden ${open ? 'is-open' : ''}`} aria-hidden={!open} inert={!open}>
+                <div
+                    ref={mobileNavigationRef}
+                    id="mobile-navigation"
+                    className={`mobile-nav-grid md:hidden ${open ? 'is-open' : ''}`}
+                    inert={!open}
+                >
                     <div className="min-h-0 overflow-hidden">
                         <nav className="page-shell border-t border-forest-950/8 py-4" aria-label="Mobile navigation">
                             <div className="grid gap-1">
                                 {navItems.map((item, index) => (
-                                    <NavLink key={item.to} to={item.to} style={{ '--nav-order': index }} className={({ isActive }) => `mobile-nav-link nav-link px-1 ${isActive ? 'nav-link-active' : ''}`}>
+                                    <NavLink key={item.to} to={item.to} onClick={() => closeMobileNavigation()} style={{ '--nav-order': index }} className={({ isActive }) => `mobile-nav-link nav-link px-1 ${isActive ? 'nav-link-active' : ''}`}>
                                         <span>{item.label}</span><span className="font-display text-xs text-stone-300">0{index + 1}</span>
                                     </NavLink>
                                 ))}
-                                <Link to="/advisor" className="button button-dark mt-3 justify-center">Check my season <ArrowUpRight size={16} /></Link>
+                                <Link to="/advisor" onClick={() => closeMobileNavigation()} className="button button-dark mt-3 justify-center">Check my season <ArrowUpRight size={16} /></Link>
                             </div>
                         </nav>
                     </div>
                 </div>
             </header>
 
-            <main key={location.pathname} className="page-transition">{children}</main>
+            <main ref={mainRef} key={location.pathname} tabIndex="-1" className="page-transition focus:outline-none">{children}</main>
 
             <footer className="mt-20 bg-forest-950 text-white">
                 <div className="page-shell grid gap-10 py-12 min-[480px]:grid-cols-2 lg:grid-cols-[1.25fr_.7fr_.7fr] lg:py-14">

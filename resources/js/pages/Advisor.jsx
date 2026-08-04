@@ -137,7 +137,9 @@ export default function Advisor() {
             setResult(advice);
             localStorage.setItem('munda:last-advice', JSON.stringify(advice));
             setSaved(true);
-            setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+            });
         } catch (requestError) {
             setError(requestError.message);
         } finally {
