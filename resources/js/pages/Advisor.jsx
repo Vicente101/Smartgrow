@@ -24,7 +24,7 @@ import {
     ThermometerSun,
     Waves,
     Wind,
-} from 'lucide-react';
+} from '../icons';
 import { readStoredAdvice } from '../lib/api';
 import { useLocation } from '../lib/router';
 import { buildAdvice } from '../services/advisor';
@@ -148,7 +148,7 @@ export default function Advisor() {
     return (
         <>
             <section className="overflow-hidden border-b border-forest-950/8 bg-sage-50">
-                <div className="page-shell grid gap-10 py-14 lg:grid-cols-[.8fr_1.2fr] lg:items-end lg:py-18">
+                <div className="page-shell grid gap-10 py-14 lg:grid-cols-[.8fr_1.2fr] lg:items-end lg:py-18" data-reveal>
                     <div>
                         <div className="eyebrow"><Sparkles size={14} /> Crop advisor</div>
                         <h1 className="mt-5 font-display text-5xl font-extrabold leading-[.98] tracking-[-0.06em] text-forest-950 sm:text-6xl">Read your season.</h1>
@@ -165,7 +165,7 @@ export default function Advisor() {
             </section>
 
             <section className="page-shell py-9 lg:py-12">
-                <form onSubmit={submit} className="rounded-[1.75rem] border border-forest-950/9 bg-white p-5 shadow-[0_18px_65px_rgba(30,67,50,.08)] sm:p-7">
+                <form onSubmit={submit} className="border border-forest-950/9 bg-white p-5 shadow-[0_18px_65px_rgba(30,67,50,.08)] sm:p-7" data-reveal>
                     <div className="grid gap-5 lg:grid-cols-[1.45fr_.65fr_.75fr_.75fr_auto] lg:items-end">
                         <div className="relative">
                             <label className="field-label" htmlFor="advisor-location">Farm location</label>
@@ -179,7 +179,7 @@ export default function Advisor() {
                                     placeholder="Town, district, or province"
                                     autoComplete="off"
                                 />
-                                <button type="button" className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-forest-700 hover:bg-sage-100" onClick={useCurrentLocation} aria-label="Use current location">
+                                <button type="button" className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center text-forest-700 transition-transform hover:scale-105" onClick={useCurrentLocation} aria-label="Use current location">
                                     {locating ? <LoaderCircle size={16} className="animate-spin" /> : <Crosshair size={16} />}
                                 </button>
                             </div>
@@ -221,7 +221,7 @@ export default function Advisor() {
                 </form>
 
                 {error && (
-                    <div className="mt-5 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800" role="alert">
+                    <div className="mt-5 flex items-start gap-3 border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800" role="alert">
                         <AlertCircle size={18} className="mt-0.5 shrink-0" /> {error}
                     </div>
                 )}
@@ -260,7 +260,7 @@ function Results({ result, saved, rerun }) {
 
     return (
         <section className="page-shell pb-10 print:pt-6">
-            <div className="overflow-hidden rounded-[2rem] bg-forest-950 text-white shadow-[0_26px_90px_rgba(17,53,39,.18)]">
+            <div className="overflow-hidden bg-forest-950 text-white shadow-[0_26px_90px_rgba(17,53,39,.18)]" data-reveal>
                 <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center lg:p-10">
                     <div>
                         <div className="flex flex-wrap items-center gap-2">
@@ -291,7 +291,7 @@ function Results({ result, saved, rerun }) {
             {saved && <p className="mt-3 flex items-center justify-end gap-1.5 text-xs font-bold text-forest-700"><Check size={14} /> Report saved on this device</p>}
 
             {forecast ? <WeatherPanel forecast={forecast} location={result.location} /> : (
-                <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">The live forecast was unavailable, so this report uses historical monthly climate only.</div>
+                <div className="mt-6 border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">The live forecast was unavailable, so this report uses historical monthly climate only.</div>
             )}
 
             <div className="mt-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -308,17 +308,17 @@ function Results({ result, saved, rerun }) {
 
             <div className="mt-14 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
                 <ClimateChart months={result.climate.months} selectedMonth={result.planting_month.number} period={result.climate.period} />
-                <div className="rounded-[1.75rem] border border-forest-950/8 bg-sage-50 p-6 sm:p-7">
+                <div className="border border-forest-950/8 bg-sage-50 p-6 sm:p-7" data-reveal>
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-xs font-bold uppercase tracking-[.15em] text-forest-700/60">Practical checklist</p>
                             <h3 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-forest-950">Before you plant</h3>
                         </div>
-                        <span className="grid size-11 place-items-center rounded-2xl bg-lime-300 text-forest-950"><Check size={20} /></span>
+                        <Check size={29} weight="BoldDuotone" className="text-forest-700" />
                     </div>
                     <div className="mt-6 grid gap-3">
                         {result.field_actions.map((action, index) => (
-                            <div key={action.title} className="rounded-2xl border border-forest-950/7 bg-white p-4">
+                            <div key={action.title} className="border border-forest-950/7 bg-white p-4">
                                 <div className="flex gap-3">
                                     <span className="grid size-7 shrink-0 place-items-center rounded-full bg-forest-950 text-[0.65rem] font-bold text-white">{index + 1}</span>
                                     <div>
@@ -332,7 +332,7 @@ function Results({ result, saved, rerun }) {
                 </div>
             </div>
 
-            <div className="mt-8 rounded-2xl border border-forest-950/8 bg-white p-5 text-xs leading-6 text-stone-500">
+            <div className="mt-8 border border-forest-950/8 bg-white p-5 text-xs leading-6 text-stone-500" data-reveal>
                 <span className="font-bold text-forest-900">How this was calculated:</span> {result.methodology.signals.join(', ')}. Data sources: {result.climate.source}{forecast ? ` and ${forecast.source}` : ''}. {result.methodology.disclaimer}
             </div>
         </section>
@@ -342,7 +342,7 @@ function Results({ result, saved, rerun }) {
 function Metric({ icon: Icon, label, value }) {
     return (
         <div className="flex items-center gap-3 border-b border-white/10 p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 lg:px-7">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/8 text-lime-200"><Icon size={18} /></span>
+            <Icon size={25} weight="BoldDuotone" className="shrink-0 text-lime-200" />
             <div>
                 <p className="text-[0.64rem] font-bold uppercase tracking-wider text-white/38">{label}</p>
                 <p className="mt-1 font-display text-lg font-bold tracking-tight">{value}</p>
@@ -354,7 +354,7 @@ function Metric({ icon: Icon, label, value }) {
 function WeatherPanel({ forecast, location }) {
     const current = forecast.current;
     return (
-        <div className="mt-6 overflow-hidden rounded-[1.75rem] border border-forest-950/8 bg-white">
+        <div className="mt-6 overflow-hidden border border-forest-950/8 bg-white" data-reveal>
             <div className="grid lg:grid-cols-[.72fr_1.28fr]">
                 <div className="flex items-center justify-between gap-6 bg-sage-50 p-6 sm:p-7">
                     <div>
@@ -374,7 +374,7 @@ function WeatherPanel({ forecast, location }) {
                 <div className="min-w-0 p-5 sm:p-6">
                     <div className="forecast-scroll flex gap-3 overflow-x-auto pb-2">
                         {forecast.daily.slice(0, 7).map((day, index) => (
-                            <div key={day.date} className={`min-w-[112px] flex-1 rounded-2xl p-3 text-center ${index === 0 ? 'bg-forest-950 text-white' : 'bg-stone-50 text-forest-950'}`}>
+                            <div key={day.date} className={`min-w-[112px] flex-1 p-3 text-center ${index === 0 ? 'bg-forest-950 text-white' : 'bg-stone-50 text-forest-950'}`}>
                                 <p className={`text-[0.65rem] font-bold uppercase tracking-wider ${index === 0 ? 'text-white/50' : 'text-stone-400'}`}>{index === 0 ? 'Today' : new Date(`${day.date}T12:00:00`).toLocaleDateString('en', { weekday: 'short' })}</p>
                                 <WeatherGlyph code={day.weather_code} size={22} className={`mx-auto mt-3 ${index === 0 ? 'text-lime-200' : 'text-forest-700'}`} />
                                 <p className="mt-3 text-sm font-extrabold">{Math.round(day.temp_max)}° <span className={index === 0 ? 'text-white/45' : 'text-stone-300'}>{Math.round(day.temp_min)}°</span></p>
@@ -393,7 +393,7 @@ function CropCard({ crop, rank, defaultOpen }) {
     const componentLabels = { temperature: 'Temperature', rainfall: 'Rainfall', humidity: 'Humidity', soil: 'Soil match', near_term: '14-day outlook' };
 
     return (
-        <article className={`overflow-hidden rounded-[1.6rem] border bg-white transition-shadow ${open ? 'border-forest-800/18 shadow-[0_18px_55px_rgba(30,67,50,.09)]' : 'border-forest-950/8 hover:shadow-lg'}`}>
+        <article className={`overflow-hidden border bg-white transition-shadow ${open ? 'border-forest-800/18 shadow-[0_18px_55px_rgba(30,67,50,.09)]' : 'border-forest-950/8 hover:shadow-lg'}`} data-reveal>
             <button type="button" onClick={() => setOpen((value) => !value)} className="flex w-full items-center gap-4 p-5 text-left sm:p-6" aria-expanded={open}>
                 <span className="font-display text-sm font-extrabold text-stone-300">{String(rank).padStart(2, '0')}</span>
                 <ScoreRing score={crop.score} small />
@@ -421,20 +421,20 @@ function CropCard({ crop, rank, defaultOpen }) {
                         ))}
                     </div>
                     <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-2xl bg-emerald-50 p-4">
+                        <div className="bg-emerald-50 p-4">
                             <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800"><Check size={14} /> Why it fits</p>
                             <ul className="mt-3 grid gap-2 text-xs leading-5 text-emerald-950/70">
                                 {crop.strengths.map((item) => <li key={item}>• {item}</li>)}
                             </ul>
                         </div>
-                        <div className="rounded-2xl bg-amber-50 p-4">
+                        <div className="bg-amber-50 p-4">
                             <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800"><AlertCircle size={14} /> Watch closely</p>
                             <ul className="mt-3 grid gap-2 text-xs leading-5 text-amber-950/70">
                                 {crop.watchouts.map((item) => <li key={item}>• {item}</li>)}
                             </ul>
                         </div>
                     </div>
-                    <div className="mt-5 grid gap-3 rounded-2xl border border-forest-950/7 p-4 sm:grid-cols-[auto_auto_1fr]">
+                    <div className="mt-5 grid gap-3 border border-forest-950/7 p-4 sm:grid-cols-[auto_auto_1fr]">
                         <MiniFact label="Crop cycle" value={`~${crop.cycle_days} days`} />
                         <MiniFact label="Water need" value={crop.water_need} />
                         <div className="sm:border-l sm:border-forest-950/8 sm:pl-4">
@@ -464,26 +464,68 @@ function ScoreRing({ score, small = false, dark = false }) {
 }
 
 function ClimateChart({ months, selectedMonth, period }) {
-    const maxRain = Math.max(...months.map((month) => Number(month.rainfall) || 0), 1);
+    const [metric, setMetric] = useState('rainfall');
+    const [activeMonth, setActiveMonth] = useState(selectedMonth);
+    const metricOptions = {
+        rainfall: { label: 'Rainfall', unit: 'mm', icon: Droplets, color: 'bg-blue-600' },
+        temperature: { label: 'Temperature', unit: '°C', icon: ThermometerSun, color: 'bg-lime-500' },
+        humidity: { label: 'Humidity', unit: '%', icon: Waves, color: 'bg-forest-700' },
+    };
+    const selectedMetric = metricOptions[metric];
+    const active = months.find((month) => month.month === activeMonth) || months[0];
+    const maxValue = Math.max(...months.map((month) => Number(month[metric]) || 0), 1);
+
+    useEffect(() => setActiveMonth(selectedMonth), [selectedMonth]);
+
     return (
-        <div className="rounded-[1.75rem] border border-forest-950/8 bg-white p-6 sm:p-7">
+        <div className="border border-forest-950/8 bg-white p-6 sm:p-7" data-reveal>
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <p className="text-xs font-bold uppercase tracking-[.15em] text-forest-700/60">Historical context · {period}</p>
-                    <h3 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-forest-950">Typical rainfall by month</h3>
+                    <h3 className="mt-2 font-display text-2xl font-extrabold tracking-tight text-forest-950">Explore the local climate</h3>
                 </div>
-                <span className="grid size-11 place-items-center rounded-2xl bg-blue-50 text-blue-700"><BarChart3 size={20} /></span>
+                <BarChart3 size={30} weight="BoldDuotone" className="shrink-0 text-blue-700" />
             </div>
-            <div className="forecast-scroll mt-8 flex h-52 min-w-0 items-end gap-2 overflow-x-auto pb-2 sm:gap-3">
-                {months.map((month) => {
-                    const active = month.month === selectedMonth;
-                    const height = Math.max((Number(month.rainfall) / maxRain) * 100, 3);
+
+            <div className="mt-6 flex flex-wrap gap-5 border-y border-forest-950/8 py-3" aria-label="Chart metric">
+                {Object.entries(metricOptions).map(([key, option]) => {
+                    const Icon = option.icon;
                     return (
-                        <div key={month.month} className="flex h-full min-w-[32px] flex-1 flex-col items-center justify-end gap-2">
-                            {active && <span className="text-[0.58rem] font-extrabold text-forest-700">{month.rainfall}</span>}
-                            <div className={`w-full rounded-t-lg ${active ? 'bg-lime-400' : 'bg-sage-200'}`} style={{ height: `${height}%` }} title={`${month.label}: ${month.rainfall} mm`} />
-                            <span className={`text-[0.62rem] font-bold ${active ? 'text-forest-950' : 'text-stone-400'}`}>{month.label.slice(0, 1)}</span>
-                        </div>
+                        <button key={key} type="button" onClick={() => setMetric(key)} className={`flex items-center gap-2 border-b-2 py-2 text-xs font-bold transition-colors ${metric === key ? 'border-forest-800 text-forest-950' : 'border-transparent text-stone-400 hover:text-forest-700'}`} aria-pressed={metric === key}>
+                            <Icon size={17} weight="BoldDuotone" /> {option.label}
+                        </button>
+                    );
+                })}
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3 border-l-2 border-lime-400 pl-4 sm:grid-cols-3" aria-live="polite">
+                <div><p className="chart-label">Selected month</p><p className="chart-value">{active?.label}</p></div>
+                <div><p className="chart-label">{selectedMetric.label}</p><p className="chart-value">{active?.[metric]} {selectedMetric.unit}</p></div>
+                <div><p className="chart-label">Rain days</p><p className="chart-value">{active?.rain_days ?? '—'}</p></div>
+            </div>
+
+            <div className="forecast-scroll mt-7 flex h-52 min-w-0 items-end gap-2 overflow-x-auto pb-2 sm:gap-3" role="list" aria-label={`${selectedMetric.label} by month`}>
+                {months.map((month) => {
+                    const isActive = month.month === activeMonth;
+                    const value = Number(month[metric]) || 0;
+                    const height = Math.max((value / maxValue) * 100, 3);
+                    return (
+                        <button
+                            key={month.month}
+                            type="button"
+                            onClick={() => setActiveMonth(month.month)}
+                            onMouseEnter={() => setActiveMonth(month.month)}
+                            onFocus={() => setActiveMonth(month.month)}
+                            className="chart-column flex h-full min-w-[32px] flex-1 flex-col items-center justify-end gap-2"
+                            aria-label={`${month.label}: ${value} ${selectedMetric.unit}`}
+                            aria-pressed={isActive}
+                        >
+                            <span className={`text-[0.58rem] font-extrabold ${isActive ? 'text-forest-700' : 'text-stone-300'}`}>{value}</span>
+                            <span className="relative flex h-[75%] w-full items-end bg-sage-50">
+                                <span className={`chart-bar block w-full ${isActive ? selectedMetric.color : 'bg-sage-200'}`} style={{ height: `${height}%` }} />
+                            </span>
+                            <span className={`text-[0.62rem] font-bold ${isActive ? 'text-forest-950' : 'text-stone-400'}`}>{month.label.slice(0, 1)}</span>
+                        </button>
                     );
                 })}
             </div>
@@ -494,8 +536,8 @@ function ClimateChart({ months, selectedMonth, period }) {
 function AdvisorEmpty() {
     return (
         <section className="page-shell pb-8">
-            <div className="grid gap-5 rounded-[2rem] border border-dashed border-forest-900/16 bg-sage-50 p-7 sm:p-10 lg:grid-cols-[auto_1fr_auto] lg:items-center">
-                <span className="grid size-14 place-items-center rounded-2xl bg-forest-950 text-lime-300"><Sprout size={25} /></span>
+            <div className="grid gap-5 border border-dashed border-forest-900/16 bg-sage-50 p-7 sm:p-10 lg:grid-cols-[auto_1fr_auto] lg:items-center" data-reveal>
+                <Sprout size={38} weight="BoldDuotone" className="text-forest-800" />
                 <div>
                     <h2 className="font-display text-2xl font-extrabold tracking-tight text-forest-950">Your crop shortlist will appear here.</h2>
                     <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-500">Start with the nearest town. Adding soil type and water access increases the usefulness of your score.</p>
@@ -509,7 +551,7 @@ function AdvisorEmpty() {
 function AnalysisSkeleton() {
     return (
         <section className="page-shell pb-8" aria-live="polite">
-            <div className="rounded-[2rem] bg-forest-950 p-8 text-white sm:p-10">
+            <div className="bg-forest-950 p-8 text-white sm:p-10">
                 <div className="flex items-center gap-3"><LoaderCircle size={22} className="animate-spin text-lime-300" /><span className="font-display text-xl font-bold">Reading local climate and ranking crops…</span></div>
                 <div className="mt-7 h-2 overflow-hidden rounded-full bg-white/10"><div className="analysis-progress h-full w-1/2 rounded-full bg-lime-300" /></div>
                 <p className="mt-4 text-xs text-white/45">This may take a few seconds on the first request; later results are cached.</p>

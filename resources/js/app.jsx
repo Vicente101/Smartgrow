@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
 import '../css/app.css';
 import Layout from './components/Layout';
-import Home from './pages/Home';
-import Advisor from './pages/Advisor';
-import News from './pages/News';
-import Contact from './pages/Contact';
 import { RouterProvider, useLocation } from './lib/router';
+
+const Home = lazy(() => import('./pages/Home'));
+const Advisor = lazy(() => import('./pages/Advisor'));
+const News = lazy(() => import('./pages/News'));
+const Contact = lazy(() => import('./pages/Contact'));
 
 function Page() {
     const { pathname } = useLocation();
@@ -19,7 +20,11 @@ function Page() {
 createRoot(document.getElementById('app')).render(
     <React.StrictMode>
         <RouterProvider>
-            <Layout><Page /></Layout>
+            <Layout>
+                <Suspense fallback={<div className="page-shell grid min-h-[55vh] place-items-center"><p className="text-sm font-bold text-forest-700">Loading Munda…</p></div>}>
+                    <Page />
+                </Suspense>
+            </Layout>
         </RouterProvider>
     </React.StrictMode>,
 );

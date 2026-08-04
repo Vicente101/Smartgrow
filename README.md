@@ -46,17 +46,18 @@ The repository includes `.github/workflows/deploy-pages.yml`. It tests and build
 3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
 4. Open the repository's **Actions** tab and select **Deploy Munda to GitHub Pages**.
 5. Wait for both the `build` and `deploy` jobs to become green.
-6. Open `https://vicente101.github.io/The-Recommending-System/`.
+6. Open `https://vicente101.github.io/Smartgrow/`.
 
 Every later push to `main` automatically tests and republishes the site. Navigation uses URL hashes, such as `#/advisor`, so refreshing an internal page works reliably on static hosting. A `404.html` redirect also recovers old path-style links.
 
-If the root still shows 404, confirm that the Pages source is **GitHub Actions**, the latest workflow run succeeded, and the repository name still matches `The-Recommending-System`.
+If the root still shows 404, confirm that the Pages source is **GitHub Actions**, the latest workflow run succeeded, and the repository name still matches `Smartgrow`.
 
 ## Static architecture
 
 | Area | Implementation |
 | --- | --- |
 | Interface | React and Tailwind CSS, bundled by Vite |
+| Icons | Solar Icons React package by 480 Design (CC BY 4.0) |
 | Routing | Small hash router compatible with GitHub Pages |
 | Crop catalogue | Version-controlled JavaScript data in `resources/js/data/crops.js` |
 | Recommendation engine | Browser-side explainable scoring in `resources/js/services/recommendation.js` |
@@ -87,6 +88,7 @@ The default non-commercial setup uses no paid keys:
 - [NASA POWER](https://power.larc.nasa.gov/) — agroclimatology fallback.
 - [Nominatim](https://nominatim.org/) and [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) — reverse geocoding.
 - [GDELT](https://www.gdeltproject.org/) — global news discovery.
+- [Solar Icons](https://www.figma.com/community/file/1166831539721848736) — interface iconography by 480 Design.
 
 Coordinates are sent only to the listed data providers when an analysis is requested. Results and caches remain in the user's browser. Review each provider's attribution and usage terms before commercial or high-volume deployment.
 

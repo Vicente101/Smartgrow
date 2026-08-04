@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from '../icons';
 import { Link, NavLink, useLocation } from '../lib/router';
 import Brand from './Brand';
 
@@ -17,13 +17,51 @@ export default function Layout({ children }) {
     useEffect(() => {
         setOpen(false);
         window.scrollTo({ top: 0, behavior: 'instant' });
+
+        let observer;
+        let mutationObserver;
+
+        const frame = window.requestAnimationFrame(() => {
+            if (!('IntersectionObserver' in window)) {
+                const revealAll = () => document.querySelectorAll('[data-reveal]').forEach((element) => element.classList.add('is-visible'));
+                revealAll();
+                mutationObserver = new MutationObserver(revealAll);
+                mutationObserver.observe(document.querySelector('main'), { childList: true, subtree: true });
+                return;
+            }
+
+            observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+
+            const observeReveals = (root = document) => {
+                if (root.matches?.('[data-reveal]')) observer.observe(root);
+                root.querySelectorAll?.('[data-reveal]').forEach((element) => observer.observe(element));
+            };
+            observeReveals();
+            mutationObserver = new MutationObserver((records) => records.forEach((record) => record.addedNodes.forEach((node) => {
+                if (node.nodeType === Node.ELEMENT_NODE) observeReveals(node);
+            })));
+            mutationObserver.observe(document.querySelector('main'), { childList: true, subtree: true });
+        });
+
+        return () => {
+            window.cancelAnimationFrame(frame);
+            observer?.disconnect();
+            mutationObserver?.disconnect();
+        };
     }, [location.pathname]);
 
     return (
         <div className="min-h-screen bg-canvas text-ink selection:bg-lime-200 selection:text-forest-950">
             <header className="sticky top-0 z-50 border-b border-forest-950/7 bg-canvas/90 backdrop-blur-xl">
                 <div className="page-shell flex h-[76px] items-center justify-between">
-                    <Link to="/" className="rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-700">
+                    <Link to="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-700">
                         <Brand />
                     </Link>
 
@@ -48,7 +86,7 @@ export default function Layout({ children }) {
 
                     <button
                         type="button"
-                        className="grid size-11 place-items-center rounded-xl border border-forest-950/10 bg-white md:hidden"
+                        className="grid size-11 place-items-center border border-forest-950/10 bg-transparent text-forest-900 md:hidden"
                         onClick={() => setOpen((value) => !value)}
                         aria-label={open ? 'Close navigation' : 'Open navigation'}
                         aria-expanded={open}
@@ -71,7 +109,7 @@ export default function Layout({ children }) {
                 )}
             </header>
 
-            <main>{children}</main>
+            <main key={location.pathname} className="page-transition">{children}</main>
 
             <footer className="mt-20 bg-forest-950 text-white">
                 <div className="page-shell grid gap-10 py-14 lg:grid-cols-[1.25fr_.7fr_.7fr]">
@@ -96,6 +134,7 @@ export default function Layout({ children }) {
                             <a className="footer-link" href="https://power.larc.nasa.gov/" target="_blank" rel="noreferrer">NASA POWER</a>
                             <a className="footer-link" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a>
                             <a className="footer-link" href="https://www.gdeltproject.org/" target="_blank" rel="noreferrer">GDELT Project</a>
+                            <a className="footer-link" href="https://www.figma.com/community/file/1166831539721848736" target="_blank" rel="noreferrer">Solar Icons by 480 Design</a>
                         </div>
                     </div>
                 </div>
