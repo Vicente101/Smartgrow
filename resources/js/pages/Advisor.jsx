@@ -302,7 +302,7 @@ function Results({ result, saved, rerun }) {
                 <p className="max-w-md text-xs leading-6 text-stone-400">Scores compare this location and month with each crop’s climate, moisture, and soil requirements.</p>
             </div>
 
-            <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            <div className="mt-8 grid items-start gap-4 lg:grid-cols-2">
                 {result.recommendations.map((crop, index) => <CropCard key={crop.id} crop={crop} rank={index + 1} defaultOpen={index === 0} />)}
             </div>
 
@@ -391,10 +391,11 @@ function WeatherPanel({ forecast, location }) {
 function CropCard({ crop, rank, defaultOpen }) {
     const [open, setOpen] = useState(defaultOpen);
     const componentLabels = { temperature: 'Temperature', rainfall: 'Rainfall', humidity: 'Humidity', soil: 'Soil match', near_term: '14-day outlook' };
+    const detailsId = `crop-details-${crop.id}`;
 
     return (
-        <article className={`overflow-hidden border bg-white transition-shadow ${open ? 'border-forest-800/18 shadow-[0_18px_55px_rgba(30,67,50,.09)]' : 'border-forest-950/8 hover:shadow-lg'}`} data-reveal>
-            <button type="button" onClick={() => setOpen((value) => !value)} className="flex w-full items-center gap-4 p-5 text-left sm:p-6" aria-expanded={open}>
+        <article className={`crop-card overflow-hidden border bg-white ${open ? 'is-open border-forest-800/18 shadow-[0_18px_55px_rgba(30,67,50,.09)]' : 'border-forest-950/8'}`} data-reveal>
+            <button type="button" onClick={() => setOpen((value) => !value)} className="crop-toggle flex w-full items-center gap-4 p-5 text-left sm:p-6" aria-expanded={open} aria-controls={detailsId}>
                 <span className="font-display text-sm font-extrabold text-stone-300">{String(rank).padStart(2, '0')}</span>
                 <ScoreRing score={crop.score} small />
                 <span className="min-w-0 flex-1">
@@ -404,46 +405,51 @@ function CropCard({ crop, rank, defaultOpen }) {
                     </span>
                     <span className="mt-1 block truncate text-xs italic text-stone-400">{crop.scientific_name} · {crop.category}</span>
                 </span>
-                <ChevronDown size={19} className={`shrink-0 text-stone-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+                <span className="ml-1 flex shrink-0 items-center gap-2 text-[0.62rem] font-extrabold uppercase tracking-[.1em] text-stone-400">
+                    <span className="hidden sm:inline">{open ? 'Close' : 'Details'}</span>
+                    <ChevronDown size={19} className={`transition-transform duration-500 ease-out ${open ? 'rotate-180 text-forest-700' : ''}`} />
+                </span>
             </button>
 
-            {open && (
-                <div className="border-t border-forest-950/7 px-5 pb-6 pt-5 sm:px-6">
-                    <p className="text-sm leading-7 text-stone-600">{crop.description}</p>
-                    <div className="mt-5 grid gap-4 sm:grid-cols-5">
-                        {Object.entries(crop.components).map(([key, score]) => (
-                            <div key={key}>
-                                <div className="flex items-center justify-between gap-2 text-[0.64rem] font-bold uppercase tracking-wide text-stone-400">
-                                    <span>{componentLabels[key]}</span><span>{score}</span>
+            <div id={detailsId} className={`crop-details-grid ${open ? 'is-open' : ''}`} aria-hidden={!open}>
+                <div className="min-h-0 overflow-hidden">
+                    <div className="crop-details-content border-t border-forest-950/7 px-5 pb-6 pt-5 sm:px-6">
+                        <p className="text-sm leading-7 text-stone-600">{crop.description}</p>
+                        <div className="mt-5 grid gap-4 sm:grid-cols-5">
+                            {Object.entries(crop.components).map(([key, score]) => (
+                                <div key={key}>
+                                    <div className="flex items-center justify-between gap-2 text-[0.64rem] font-bold uppercase tracking-wide text-stone-400">
+                                        <span>{componentLabels[key]}</span><span>{score}</span>
+                                    </div>
+                                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-stone-100"><div className="crop-score-bar h-full rounded-full bg-forest-700" style={{ '--score-width': `${score}%` }} /></div>
                                 </div>
-                                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-stone-100"><div className="h-full rounded-full bg-forest-700" style={{ width: `${score}%` }} /></div>
+                            ))}
+                        </div>
+                        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                            <div className="bg-emerald-50 p-4">
+                                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800"><Check size={14} /> Why it fits</p>
+                                <ul className="mt-3 grid gap-2 text-xs leading-5 text-emerald-950/70">
+                                    {crop.strengths.map((item) => <li key={item}>• {item}</li>)}
+                                </ul>
                             </div>
-                        ))}
-                    </div>
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                        <div className="bg-emerald-50 p-4">
-                            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800"><Check size={14} /> Why it fits</p>
-                            <ul className="mt-3 grid gap-2 text-xs leading-5 text-emerald-950/70">
-                                {crop.strengths.map((item) => <li key={item}>• {item}</li>)}
-                            </ul>
+                            <div className="bg-amber-50 p-4">
+                                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800"><AlertCircle size={14} /> Watch closely</p>
+                                <ul className="mt-3 grid gap-2 text-xs leading-5 text-amber-950/70">
+                                    {crop.watchouts.map((item) => <li key={item}>• {item}</li>)}
+                                </ul>
+                            </div>
                         </div>
-                        <div className="bg-amber-50 p-4">
-                            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800"><AlertCircle size={14} /> Watch closely</p>
-                            <ul className="mt-3 grid gap-2 text-xs leading-5 text-amber-950/70">
-                                {crop.watchouts.map((item) => <li key={item}>• {item}</li>)}
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="mt-5 grid gap-3 border border-forest-950/7 p-4 sm:grid-cols-[auto_auto_1fr]">
-                        <MiniFact label="Crop cycle" value={`~${crop.cycle_days} days`} />
-                        <MiniFact label="Water need" value={crop.water_need} />
-                        <div className="sm:border-l sm:border-forest-950/8 sm:pl-4">
-                            <p className="text-[0.63rem] font-bold uppercase tracking-wider text-stone-400">Planting guidance</p>
-                            <p className="mt-1 text-xs leading-5 text-forest-900">{crop.planting_note}</p>
+                        <div className="mt-5 grid gap-3 border border-forest-950/7 p-4 sm:grid-cols-[auto_auto_1fr]">
+                            <MiniFact label="Crop cycle" value={`~${crop.cycle_days} days`} />
+                            <MiniFact label="Water need" value={crop.water_need} />
+                            <div className="sm:border-l sm:border-forest-950/8 sm:pl-4">
+                                <p className="text-[0.63rem] font-bold uppercase tracking-wider text-stone-400">Planting guidance</p>
+                                <p className="mt-1 text-xs leading-5 text-forest-900">{crop.planting_note}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
         </article>
     );
 }

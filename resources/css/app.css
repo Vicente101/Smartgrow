@@ -350,6 +350,77 @@
         font-size: 1rem;
         font-weight: 800;
     }
+
+    .crop-card {
+        transform: translateY(0);
+        transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+    }
+
+    .crop-card:not(.is-open):hover {
+        border-color: rgba(16, 45, 35, .16);
+        box-shadow: 0 14px 38px rgba(28, 62, 47, .07);
+        transform: translateY(-2px);
+    }
+
+    .crop-toggle {
+        transition: background-color .25s ease;
+    }
+
+    .crop-toggle:hover {
+        background: #f8faf6;
+    }
+
+    .crop-card.is-open .crop-toggle {
+        background: #fbfcf8;
+    }
+
+    .crop-details-grid {
+        display: grid;
+        grid-template-rows: 0fr;
+        opacity: 0;
+        visibility: hidden;
+        transition: grid-template-rows .5s cubic-bezier(.2, .72, .2, 1), opacity .3s ease, visibility 0s linear .5s;
+    }
+
+    .crop-details-grid.is-open {
+        grid-template-rows: 1fr;
+        opacity: 1;
+        visibility: visible;
+        transition: grid-template-rows .5s cubic-bezier(.2, .72, .2, 1), opacity .35s ease .08s, visibility 0s;
+    }
+
+    .crop-details-content > * {
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity .28s ease, transform .36s ease;
+    }
+
+    .crop-details-grid.is-open .crop-details-content > * {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .crop-details-grid.is-open .crop-details-content > :nth-child(2) {
+        transition-delay: .06s;
+    }
+
+    .crop-details-grid.is-open .crop-details-content > :nth-child(3) {
+        transition-delay: .1s;
+    }
+
+    .crop-details-grid.is-open .crop-details-content > :nth-child(4) {
+        transition-delay: .14s;
+    }
+
+    .crop-score-bar {
+        width: 0;
+        transition: width .65s cubic-bezier(.2, .72, .2, 1);
+    }
+
+    .crop-details-grid.is-open .crop-score-bar {
+        width: var(--score-width);
+        transition-delay: .12s;
+    }
 }
 
 @layer utilities {
@@ -397,7 +468,7 @@
         transition: opacity .7s cubic-bezier(.2, .72, .2, 1), transform .7s cubic-bezier(.2, .72, .2, 1);
     }
 
-    [data-reveal].is-visible {
+    [data-reveal][data-revealed='true'] {
         opacity: 1;
         transform: translateY(0);
     }

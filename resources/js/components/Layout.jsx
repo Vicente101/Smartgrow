@@ -23,7 +23,7 @@ export default function Layout({ children }) {
 
         const frame = window.requestAnimationFrame(() => {
             if (!('IntersectionObserver' in window)) {
-                const revealAll = () => document.querySelectorAll('[data-reveal]').forEach((element) => element.classList.add('is-visible'));
+                const revealAll = () => document.querySelectorAll('[data-reveal]').forEach((element) => { element.dataset.revealed = 'true'; });
                 revealAll();
                 mutationObserver = new MutationObserver(revealAll);
                 mutationObserver.observe(document.querySelector('main'), { childList: true, subtree: true });
@@ -33,7 +33,9 @@ export default function Layout({ children }) {
             observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
+                        // Store visibility outside className so React state updates
+                        // cannot accidentally hide an already-revealed component.
+                        entry.target.dataset.revealed = 'true';
                         observer.unobserve(entry.target);
                     }
                 });
