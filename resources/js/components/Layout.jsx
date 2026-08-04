@@ -59,10 +59,15 @@ export default function Layout({ children }) {
         };
     }, [location.pathname]);
 
+    useEffect(() => {
+        document.body.style.overflow = open ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [open]);
+
     return (
         <div className="min-h-screen bg-canvas text-ink selection:bg-lime-200 selection:text-forest-950">
             <header className="sticky top-0 z-50 border-b border-forest-950/7 bg-canvas/90 backdrop-blur-xl">
-                <div className="page-shell flex h-[76px] items-center justify-between">
+                <div className="page-shell flex h-[68px] items-center justify-between sm:h-[76px]">
                     <Link to="/" className="focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-700">
                         <Brand />
                     </Link>
@@ -97,25 +102,27 @@ export default function Layout({ children }) {
                     </button>
                 </div>
 
-                {open && (
-                    <nav className="page-shell border-t border-forest-950/8 py-4 md:hidden" aria-label="Mobile navigation">
-                        <div className="grid gap-1">
-                            {navItems.map((item) => (
-                                <NavLink key={item.to} to={item.to} className={({ isActive }) => `nav-link px-1 ${isActive ? 'nav-link-active' : ''}`}>
-                                    {item.label}
-                                </NavLink>
-                            ))}
-                            <Link to="/advisor" className="button button-dark mt-3 justify-center">Check my season <ArrowUpRight size={16} /></Link>
-                        </div>
-                    </nav>
-                )}
+                <div className={`mobile-nav-grid md:hidden ${open ? 'is-open' : ''}`} aria-hidden={!open} inert={!open}>
+                    <div className="min-h-0 overflow-hidden">
+                        <nav className="page-shell border-t border-forest-950/8 py-4" aria-label="Mobile navigation">
+                            <div className="grid gap-1">
+                                {navItems.map((item, index) => (
+                                    <NavLink key={item.to} to={item.to} style={{ '--nav-order': index }} className={({ isActive }) => `mobile-nav-link nav-link px-1 ${isActive ? 'nav-link-active' : ''}`}>
+                                        <span>{item.label}</span><span className="font-display text-xs text-stone-300">0{index + 1}</span>
+                                    </NavLink>
+                                ))}
+                                <Link to="/advisor" className="button button-dark mt-3 justify-center">Check my season <ArrowUpRight size={16} /></Link>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
             </header>
 
             <main key={location.pathname} className="page-transition">{children}</main>
 
             <footer className="mt-20 bg-forest-950 text-white">
-                <div className="page-shell grid gap-10 py-14 lg:grid-cols-[1.25fr_.7fr_.7fr]">
-                    <div className="max-w-md">
+                <div className="page-shell grid gap-10 py-12 min-[480px]:grid-cols-2 lg:grid-cols-[1.25fr_.7fr_.7fr] lg:py-14">
+                    <div className="max-w-md min-[480px]:col-span-2 lg:col-span-1">
                         <Brand light />
                         <p className="mt-5 text-sm leading-7 text-white/58">
                             Clearer planting decisions from local climate history, live forecasts, and practical crop requirements.

@@ -83,20 +83,20 @@ export default function Home() {
             <section className="relative overflow-hidden bg-forest-950 text-white">
                 <div className="absolute inset-0 opacity-20 grain" />
                 <div className="absolute -right-28 -top-28 size-[34rem] rounded-full bg-lime-400/12 blur-3xl" />
-                <div className="page-shell relative grid min-h-[690px] items-center gap-12 py-16 lg:grid-cols-[1.04fr_.96fr] lg:py-20">
+                <div className="page-shell relative grid items-center gap-12 py-12 sm:py-16 lg:min-h-[690px] lg:grid-cols-[1.04fr_.96fr] lg:py-20">
                     <div className="relative z-10" data-reveal>
                         <div className="eyebrow eyebrow-light">
                             <Sparkles size={15} weight="BoldDuotone" />
                             Climate-smart crop guidance
                         </div>
-                        <h1 className="mt-7 max-w-3xl font-display text-[clamp(3.2rem,7vw,6.3rem)] font-extrabold leading-[.93] tracking-[-0.072em]">
+                        <h1 className="hero-title mt-7 max-w-3xl font-display font-extrabold leading-[.93] tracking-[-0.065em]">
                             Plant with the <span className="text-lime-300">season</span>, not against it.
                         </h1>
                         <p className="mt-7 max-w-xl text-base leading-8 text-white/66 sm:text-lg">
                             Turn local weather and long-term climate patterns into a practical crop shortlist you can understand, compare, and act on.
                         </p>
 
-                        <form onSubmit={startAdvice} className="mt-9 flex max-w-xl flex-col gap-2 bg-white p-2 shadow-2xl shadow-black/25 sm:flex-row">
+                        <form onSubmit={startAdvice} className="mt-8 flex w-full max-w-xl flex-col gap-2 bg-white p-2 shadow-2xl shadow-black/25 sm:mt-9 sm:flex-row">
                             <label className="flex min-w-0 flex-1 items-center gap-3 px-3" htmlFor="home-location">
                                 <MapPin size={21} weight="BoldDuotone" className="shrink-0 text-forest-700" />
                                 <span className="sr-only">Your town or district</span>
@@ -237,7 +237,7 @@ function HeroCarousel() {
             onKeyDown={handleKeyDown}
             data-reveal
         >
-            <div className="relative aspect-[.91] overflow-hidden border border-white/12 shadow-2xl shadow-black/30" role="region" aria-roledescription="carousel" aria-label="Munda field stories">
+            <div className="relative aspect-[4/5] overflow-hidden border border-white/12 shadow-2xl shadow-black/30 sm:aspect-[.91]" role="region" aria-roledescription="carousel" aria-label="Munda field stories">
                 <div className="hero-track flex h-full" style={{ transform: `translateX(-${active * 100}%)` }}>
                     {heroSlides.map((slide, index) => (
                         <figure key={slide.image} className="relative h-full min-w-full" aria-hidden={index !== active}>
@@ -249,9 +249,9 @@ function HeroCarousel() {
                                 loading={index === 0 ? 'eager' : 'lazy'}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-forest-950/88 via-forest-950/5 to-white/5" />
-                            <figcaption className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                            <figcaption className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
                                 <p className="text-[0.68rem] font-bold uppercase tracking-[.18em] text-lime-200">{slide.kicker}</p>
-                                <p className="mt-2 max-w-[23rem] font-display text-2xl font-bold leading-tight tracking-tight">{slide.title}</p>
+                                <p className="mt-2 max-w-[23rem] font-display text-xl font-bold leading-tight tracking-tight sm:text-2xl">{slide.title}</p>
                             </figcaption>
                         </figure>
                     ))}
@@ -264,8 +264,9 @@ function HeroCarousel() {
                 </div>
             </div>
 
-            <div className="absolute -left-5 top-10 border border-white/70 bg-white/94 p-4 text-ink shadow-xl backdrop-blur sm:-left-12">
-                <div className="flex items-center gap-3">
+            <div className="mt-px grid grid-cols-2 gap-px bg-white/10 sm:contents">
+            <div className="relative border border-white/10 bg-white p-3 text-ink sm:absolute sm:-left-12 sm:top-10 sm:border-white/70 sm:bg-white/94 sm:p-4 sm:shadow-xl sm:backdrop-blur">
+                <div className="flex items-center gap-2.5 sm:gap-3">
                     <CloudSun size={30} weight="BoldDuotone" className="text-blue-600" />
                     <div>
                         <p className="text-[0.65rem] font-bold uppercase tracking-wider text-stone-400">Forecast window</p>
@@ -273,14 +274,15 @@ function HeroCarousel() {
                     </div>
                 </div>
             </div>
-            <div className="absolute -bottom-5 right-4 border border-white/10 bg-forest-800/95 p-4 shadow-xl backdrop-blur sm:-right-8 sm:bottom-9">
-                <div className="flex items-center gap-3 text-white">
+            <div className="relative border border-white/10 bg-forest-800 p-3 sm:absolute sm:-right-8 sm:bottom-9 sm:bg-forest-800/95 sm:p-4 sm:shadow-xl sm:backdrop-blur">
+                <div className="flex items-center gap-2.5 text-white sm:gap-3">
                     <Database size={30} weight="BoldDuotone" className="text-lime-200" />
                     <div>
                         <p className="text-[0.65rem] font-bold uppercase tracking-wider text-white/45">Climate baseline</p>
                         <p className="mt-1 font-display text-lg font-extrabold tracking-tight">5 local years</p>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );
@@ -300,7 +302,7 @@ function SeasonChart() {
                 <div className="flex items-center gap-2 text-xs font-bold text-blue-700"><Droplets size={20} weight="BoldDuotone" /> Select a month</div>
             </div>
 
-            <div className="mt-7 grid grid-cols-2 gap-3 border-l-2 border-lime-400 pl-4 sm:grid-cols-3">
+            <div className="mt-7 grid grid-cols-3 gap-2 border-l-2 border-lime-400 pl-3 sm:gap-3 sm:pl-4">
                 <div><p className="chart-label">Selected month</p><p className="chart-value">{selected.label}</p></div>
                 <div><p className="chart-label">Monthly rain</p><p className="chart-value">{selected.rainfall} mm</p></div>
                 <div><p className="chart-label">Average high</p><p className="chart-value">{selected.temperature}°C</p></div>

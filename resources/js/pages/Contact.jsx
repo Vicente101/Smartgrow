@@ -39,13 +39,13 @@ export default function Contact() {
     }
 
     return (
-        <section className="page-shell py-12 sm:py-18" data-reveal>
+        <section className="page-shell py-6 sm:py-12 lg:py-18" data-reveal>
             <div className="grid overflow-hidden border border-forest-950/8 bg-white shadow-[0_24px_85px_rgba(30,67,50,.10)] lg:grid-cols-[.76fr_1.24fr]">
-                <aside className="relative overflow-hidden bg-forest-950 p-7 text-white sm:p-10">
+                <aside className="relative overflow-hidden bg-forest-950 p-5 text-white sm:p-10">
                     <div className="absolute -bottom-32 -left-20 size-96 rounded-full bg-lime-300/10 blur-3xl" />
                     <div className="relative">
                         <div className="eyebrow eyebrow-light"><MessageCircle size={16} weight="BoldDuotone" /> Let’s talk</div>
-                        <h1 className="mt-6 font-display text-4xl font-extrabold leading-tight tracking-[-0.05em] sm:text-5xl">Help us make field decisions clearer.</h1>
+                        <h1 className="mt-6 font-display text-[2.3rem] font-extrabold leading-[1.08] tracking-[-0.045em] sm:text-5xl">Help us make field decisions clearer.</h1>
                         <p className="mt-5 text-sm leading-7 text-white/58">Share feedback, report a data issue, or ask about adapting Munda for an agricultural programme.</p>
 
                         <div className="mt-10 divide-y divide-white/10 border-y border-white/10">
@@ -63,7 +63,7 @@ export default function Contact() {
                     </div>
                 </aside>
 
-                <div className="p-6 sm:p-10 lg:p-12">
+                <div className="p-5 sm:p-10 lg:p-12">
                     <p className="text-xs font-bold uppercase tracking-[.15em] text-forest-700/60">Send a message</p>
                     <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-forest-950">What can we help with?</h2>
 
@@ -82,7 +82,7 @@ export default function Contact() {
                         </div>
                         <div className="flex flex-col gap-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-xs leading-5 text-stone-400">Your details stay in this browser. The button opens a draft in your email app.</p>
-                            <button type="submit" className="button button-dark justify-center" disabled={loading}>
+                            <button type="submit" className="button button-dark w-full justify-center sm:w-auto" disabled={loading}>
                                 {loading ? <><LoaderCircle size={18} className="animate-spin" /> Preparing</> : <>Open email draft <ArrowRight size={18} /></>}
                             </button>
                         </div>
@@ -101,7 +101,7 @@ function ContactDetail({ icon: Icon, label, value, href, external = false }) {
     const content = (
         <>
             <Icon size={24} weight="BoldDuotone" className="mt-0.5 shrink-0 text-lime-200" />
-            <span><span className="block text-[0.63rem] font-bold uppercase tracking-wider text-white/35">{label}</span><span className="mt-1 block text-sm font-medium text-white/78">{value}</span></span>
+            <span className="min-w-0"><span className="block text-[0.63rem] font-bold uppercase tracking-wider text-white/35">{label}</span><span className="mt-1 block break-words text-sm font-medium text-white/78">{value}</span></span>
         </>
     );
 

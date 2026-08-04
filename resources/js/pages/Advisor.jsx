@@ -148,10 +148,10 @@ export default function Advisor() {
     return (
         <>
             <section className="overflow-hidden border-b border-forest-950/8 bg-sage-50">
-                <div className="page-shell grid gap-10 py-14 lg:grid-cols-[.8fr_1.2fr] lg:items-end lg:py-18" data-reveal>
+                <div className="page-shell grid gap-8 py-11 sm:gap-10 sm:py-14 lg:grid-cols-[.8fr_1.2fr] lg:items-end lg:py-18" data-reveal>
                     <div>
                         <div className="eyebrow"><Sparkles size={14} /> Crop advisor</div>
-                        <h1 className="mt-5 font-display text-5xl font-extrabold leading-[.98] tracking-[-0.06em] text-forest-950 sm:text-6xl">Read your season.</h1>
+                        <h1 className="mt-5 font-display text-[2.75rem] font-extrabold leading-[.98] tracking-[-0.055em] text-forest-950 sm:text-6xl">Read your season.</h1>
                         <p className="mt-5 max-w-xl text-base leading-8 text-stone-600">Tell us where and when you plan to grow. We’ll compare the season against practical requirements for 18 crops.</p>
                     </div>
                     <div className="hidden items-center justify-end gap-6 text-xs font-bold uppercase tracking-[.12em] text-forest-800/55 sm:flex">
@@ -164,8 +164,8 @@ export default function Advisor() {
                 </div>
             </section>
 
-            <section className="page-shell py-9 lg:py-12">
-                <form onSubmit={submit} className="border border-forest-950/9 bg-white p-5 shadow-[0_18px_65px_rgba(30,67,50,.08)] sm:p-7" data-reveal>
+            <section className="page-shell py-6 sm:py-9 lg:py-12">
+                <form onSubmit={submit} className="border border-forest-950/9 bg-white p-4 shadow-[0_18px_65px_rgba(30,67,50,.08)] sm:p-7" data-reveal>
                     <div className="grid gap-5 lg:grid-cols-[1.45fr_.65fr_.75fr_.75fr_auto] lg:items-end">
                         <div className="relative">
                             <label className="field-label" htmlFor="advisor-location">Farm location</label>
@@ -179,7 +179,7 @@ export default function Advisor() {
                                     placeholder="Town, district, or province"
                                     autoComplete="off"
                                 />
-                                <button type="button" className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center text-forest-700 transition-transform hover:scale-105" onClick={useCurrentLocation} aria-label="Use current location">
+                                <button type="button" className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center text-forest-700 transition-transform hover:scale-105" onClick={useCurrentLocation} aria-label="Use current location">
                                     {locating ? <LoaderCircle size={16} className="animate-spin" /> : <Crosshair size={16} />}
                                 </button>
                             </div>
@@ -261,7 +261,7 @@ function Results({ result, saved, rerun }) {
     return (
         <section className="page-shell pb-10 print:pt-6">
             <div className="overflow-hidden bg-forest-950 text-white shadow-[0_26px_90px_rgba(17,53,39,.18)]" data-reveal>
-                <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center lg:p-10">
+                <div className="grid gap-7 p-5 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center lg:p-10">
                     <div>
                         <div className="flex flex-wrap items-center gap-2">
                             <span className="status-pill status-pill-lime"><MapPin size={13} /> {result.location.label}</span>
@@ -269,7 +269,7 @@ function Results({ result, saved, rerun }) {
                             <span className="status-pill"><Gauge size={13} /> {result.confidence.level} confidence</span>
                         </div>
                         <p className="mt-7 text-xs font-bold uppercase tracking-[.17em] text-lime-200">Your strongest current match</p>
-                        <h2 className="mt-2 font-display text-4xl font-extrabold tracking-[-0.055em] sm:text-5xl">{topCrop?.name || 'Season analysis'}</h2>
+                        <h2 className="mt-2 font-display text-[2.15rem] font-extrabold leading-tight tracking-[-0.05em] sm:text-5xl">{topCrop?.name || 'Season analysis'}</h2>
                         <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60">{topCrop?.description}</p>
                     </div>
                     <div className="flex items-center gap-5 lg:flex-col lg:items-end">
@@ -294,10 +294,10 @@ function Results({ result, saved, rerun }) {
                 <div className="mt-6 border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">The live forecast was unavailable, so this report uses historical monthly climate only.</div>
             )}
 
-            <div className="mt-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="mt-12 flex flex-col gap-4 sm:mt-14 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <div className="eyebrow"><Sprout size={14} /> Ranked crop shortlist</div>
-                    <h2 className="mt-4 font-display text-3xl font-extrabold tracking-[-0.045em] text-forest-950 sm:text-4xl">Fit, trade-offs, and next steps.</h2>
+                    <h2 className="mt-4 font-display text-[2rem] font-extrabold leading-tight tracking-[-0.04em] text-forest-950 sm:text-4xl">Fit, trade-offs, and next steps.</h2>
                 </div>
                 <p className="max-w-md text-xs leading-6 text-stone-400">Scores compare this location and month with each crop’s climate, moisture, and soil requirements.</p>
             </div>
@@ -306,9 +306,9 @@ function Results({ result, saved, rerun }) {
                 {result.recommendations.map((crop, index) => <CropCard key={crop.id} crop={crop} rank={index + 1} defaultOpen={index === 0} />)}
             </div>
 
-            <div className="mt-14 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
+            <div className="mt-14 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)]">
                 <ClimateChart months={result.climate.months} selectedMonth={result.planting_month.number} period={result.climate.period} />
-                <div className="border border-forest-950/8 bg-sage-50 p-6 sm:p-7" data-reveal>
+                <div className="min-w-0 border border-forest-950/8 bg-sage-50 p-5 sm:p-7" data-reveal>
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-xs font-bold uppercase tracking-[.15em] text-forest-700/60">Practical checklist</p>
@@ -374,7 +374,7 @@ function WeatherPanel({ forecast, location }) {
                 <div className="min-w-0 p-5 sm:p-6">
                     <div className="forecast-scroll flex gap-3 overflow-x-auto pb-2">
                         {forecast.daily.slice(0, 7).map((day, index) => (
-                            <div key={day.date} className={`min-w-[112px] flex-1 p-3 text-center ${index === 0 ? 'bg-forest-950 text-white' : 'bg-stone-50 text-forest-950'}`}>
+                            <div key={day.date} className={`min-w-[104px] flex-1 p-3 text-center sm:min-w-[112px] ${index === 0 ? 'bg-forest-950 text-white' : 'bg-stone-50 text-forest-950'}`}>
                                 <p className={`text-[0.65rem] font-bold uppercase tracking-wider ${index === 0 ? 'text-white/50' : 'text-stone-400'}`}>{index === 0 ? 'Today' : new Date(`${day.date}T12:00:00`).toLocaleDateString('en', { weekday: 'short' })}</p>
                                 <WeatherGlyph code={day.weather_code} size={22} className={`mx-auto mt-3 ${index === 0 ? 'text-lime-200' : 'text-forest-700'}`} />
                                 <p className="mt-3 text-sm font-extrabold">{Math.round(day.temp_max)}° <span className={index === 0 ? 'text-white/45' : 'text-stone-300'}>{Math.round(day.temp_min)}°</span></p>
@@ -396,7 +396,7 @@ function CropCard({ crop, rank, defaultOpen }) {
     return (
         <article className={`crop-card overflow-hidden border bg-white ${open ? 'is-open border-forest-800/18 shadow-[0_18px_55px_rgba(30,67,50,.09)]' : 'border-forest-950/8'}`} data-reveal>
             <button type="button" onClick={() => setOpen((value) => !value)} className="crop-toggle flex w-full items-center gap-4 p-5 text-left sm:p-6" aria-expanded={open} aria-controls={detailsId}>
-                <span className="font-display text-sm font-extrabold text-stone-300">{String(rank).padStart(2, '0')}</span>
+                <span className="crop-rank font-display text-sm font-extrabold text-stone-300">{String(rank).padStart(2, '0')}</span>
                 <ScoreRing score={crop.score} small />
                 <span className="min-w-0 flex-1">
                     <span className="flex flex-wrap items-center gap-2">
@@ -415,7 +415,7 @@ function CropCard({ crop, rank, defaultOpen }) {
                 <div className="min-h-0 overflow-hidden">
                     <div className="crop-details-content border-t border-forest-950/7 px-5 pb-6 pt-5 sm:px-6">
                         <p className="text-sm leading-7 text-stone-600">{crop.description}</p>
-                        <div className="mt-5 grid gap-4 sm:grid-cols-5">
+                        <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-5">
                             {Object.entries(crop.components).map(([key, score]) => (
                                 <div key={key}>
                                     <div className="flex items-center justify-between gap-2 text-[0.64rem] font-bold uppercase tracking-wide text-stone-400">
@@ -439,10 +439,10 @@ function CropCard({ crop, rank, defaultOpen }) {
                                 </ul>
                             </div>
                         </div>
-                        <div className="mt-5 grid gap-3 border border-forest-950/7 p-4 sm:grid-cols-[auto_auto_1fr]">
+                        <div className="mt-5 grid grid-cols-2 gap-3 border border-forest-950/7 p-4 sm:grid-cols-[auto_auto_1fr]">
                             <MiniFact label="Crop cycle" value={`~${crop.cycle_days} days`} />
                             <MiniFact label="Water need" value={crop.water_need} />
-                            <div className="sm:border-l sm:border-forest-950/8 sm:pl-4">
+                            <div className="col-span-2 border-t border-forest-950/8 pt-3 sm:col-span-1 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
                                 <p className="text-[0.63rem] font-bold uppercase tracking-wider text-stone-400">Planting guidance</p>
                                 <p className="mt-1 text-xs leading-5 text-forest-900">{crop.planting_note}</p>
                             </div>
@@ -484,7 +484,7 @@ function ClimateChart({ months, selectedMonth, period }) {
     useEffect(() => setActiveMonth(selectedMonth), [selectedMonth]);
 
     return (
-        <div className="border border-forest-950/8 bg-white p-6 sm:p-7" data-reveal>
+        <div className="min-w-0 border border-forest-950/8 bg-white p-5 sm:p-7" data-reveal>
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <p className="text-xs font-bold uppercase tracking-[.15em] text-forest-700/60">Historical context · {period}</p>
@@ -493,18 +493,18 @@ function ClimateChart({ months, selectedMonth, period }) {
                 <BarChart3 size={30} weight="BoldDuotone" className="shrink-0 text-blue-700" />
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-5 border-y border-forest-950/8 py-3" aria-label="Chart metric">
+            <div className="mt-6 grid grid-cols-3 gap-1 border-y border-forest-950/8 py-2 sm:flex sm:flex-wrap sm:gap-5 sm:py-3" aria-label="Chart metric">
                 {Object.entries(metricOptions).map(([key, option]) => {
                     const Icon = option.icon;
                     return (
-                        <button key={key} type="button" onClick={() => setMetric(key)} className={`flex items-center gap-2 border-b-2 py-2 text-xs font-bold transition-colors ${metric === key ? 'border-forest-800 text-forest-950' : 'border-transparent text-stone-400 hover:text-forest-700'}`} aria-pressed={metric === key}>
+                        <button key={key} type="button" onClick={() => setMetric(key)} className={`flex flex-col items-center gap-1 border-b-2 px-1 py-2 text-[0.66rem] font-bold transition-colors sm:flex-row sm:gap-2 sm:px-0 sm:text-xs ${metric === key ? 'border-forest-800 text-forest-950' : 'border-transparent text-stone-400 hover:text-forest-700'}`} aria-pressed={metric === key}>
                             <Icon size={17} weight="BoldDuotone" /> {option.label}
                         </button>
                     );
                 })}
             </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-3 border-l-2 border-lime-400 pl-4 sm:grid-cols-3" aria-live="polite">
+            <div className="mt-5 grid grid-cols-3 gap-2 border-l-2 border-lime-400 pl-3 sm:gap-3 sm:pl-4" aria-live="polite">
                 <div><p className="chart-label">Selected month</p><p className="chart-value">{active?.label}</p></div>
                 <div><p className="chart-label">{selectedMetric.label}</p><p className="chart-value">{active?.[metric]} {selectedMetric.unit}</p></div>
                 <div><p className="chart-label">Rain days</p><p className="chart-value">{active?.rain_days ?? '—'}</p></div>
